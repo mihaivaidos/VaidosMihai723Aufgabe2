@@ -62,4 +62,35 @@ public class AppController {
         vereinRepo.update(vereine);
     }
 
+    public List<Vereine> filterVereineByCity(String city) {
+        List<Vereine> allVereine = vereinRepo.getAll();
+        return allVereine.stream().filter(v -> v.getCity().equals(city)).toList();
+    }
+
+    public List<Spieler> vereinePlayers(String name) {
+//        List<Vereine> vereine = vereinRepo.getAll();
+//        List<Spieler> result = new ArrayList<>();
+//        for(Vereine spieler : spielers) {
+//            if()
+//        }
+        return vereinRepo.getAll().stream().filter(v-> v.getName().equals(name)).map(v -> (Spieler) v.getPlayerList()).toList();
+        //return spielerRepo.getAll().stream().filter(c -> c.get().stream().filter(p -> p.get().equals(season1)).toList().isEmpty()).toList();
+    }
+
+    public List<Spieler> sortByValue(int vereinID, String mode) {
+        Vereine vereine = vereinRepo.get(vereinID);
+        List<Spieler> spielers = vereine.getPlayerList();
+
+        spielers.sort((p1, p2) -> mode.equals("asc") ? Integer.compare(p1.getValue(), p2.getValue()) : Integer.compare(p2.getValue(), p1.getValue()));
+        return spielers;
+    }
+
+    public void addPlayerToVerein(String playerName, int vereinID) {
+        Vereine vereine = vereinRepo.get(vereinID);
+        Spieler spieler = spielerRepo.takeByName(playerName);
+        vereine.getPlayerList().add(spieler);
+        vereine.setPlayerList(vereine.getPlayerList());
+        vereinRepo.update(vereine);
+    }
+
 }
